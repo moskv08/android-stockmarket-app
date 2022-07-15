@@ -1,8 +1,10 @@
 package com.plcoding.stockmarketapp.data.repository
 
+import com.plcoding.stockmarketapp.data.csv.CSVParser
 import com.plcoding.stockmarketapp.data.local.StockDao
 import com.plcoding.stockmarketapp.data.local.StockDatabase
 import com.plcoding.stockmarketapp.data.mapper.toCompanyListing
+import com.plcoding.stockmarketapp.data.mapper.toCompanyListingEntity
 import com.plcoding.stockmarketapp.data.remote.StockApi
 import com.plcoding.stockmarketapp.domain.model.CompanyListing
 import com.plcoding.stockmarketapp.domain.repository.StockRepository
@@ -17,7 +19,8 @@ import javax.inject.Singleton
 @Singleton
 class StockRepository @Inject constructor(
     private val api: StockApi,
-    private val db: StockDatabase
+    private val db: StockDatabase,
+    private val companyListingParser: CSVParser<CompanyListing>
 ): StockRepository {
 
     override suspend fun getCompanyListings(
@@ -44,13 +47,27 @@ class StockRepository @Inject constructor(
             // API Request
             val remoteListing = try {
                 val response = api.getStockData()
-
+                companyListingParser.parse(response.byteStream())
             } catch (e: IOException){
                 e.printStackTrace()
                 emit(Resource.Error("There was an exception: ${e.toString()}"))
+                null
             } catch (e: HttpException){
                 e.printStackTrace()
                 emit(Resource.Error("There was an exception: ${e.toString()}"))
+                null
+            }
+
+            // Update Database
+            remoteListing?.let { listings ->
+                db.dao.clearCompanyListing()
+                db.dao.insertCompanyListings(listings.map { it.toCompanyListingEntity() })
+
+                // Read from source
+                emit(Resource.Success(
+                    data = db.dao.searchCompanyListing("").map { it.toCompanyListing() }
+                ))
+                emit(Resource.isLoading(false))
             }
         }
     }
