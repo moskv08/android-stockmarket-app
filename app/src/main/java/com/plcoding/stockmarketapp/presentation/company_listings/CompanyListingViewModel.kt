@@ -18,7 +18,7 @@ class CompanyListingViewModel @Inject constructor(
     private var repository: StockRepository
 ) : ViewModel() {
 
-    private var state by mutableStateOf(CompanyListingState())
+    var state by mutableStateOf(CompanyListingState())
     private var searchJob: Job? = null
 
     fun onEvent(event: CompanyListingEvents){
@@ -31,14 +31,14 @@ class CompanyListingViewModel @Inject constructor(
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     delay(500L)
-                    getCompanyListings()
+                    getCompanyListings(fetchFromRemote = false)
                 }
             }
         }
     }
 
     private fun getCompanyListings(
-        fetchFromRemote: Boolean = false,
+        fetchFromRemote: Boolean,
         query: String = state.searchQuery.lowercase()
     ){
         viewModelScope.launch {
