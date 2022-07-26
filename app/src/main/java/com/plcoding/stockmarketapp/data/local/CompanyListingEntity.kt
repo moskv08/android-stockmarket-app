@@ -11,8 +11,8 @@ data class CompanyListingEntity(
     val symbol: String,
     val name: String,
     val exchange: String,
-    val assetType: String? = null,
-    val ipoDate: Date? = null,
-    val delistingDate: Date? = null,
-    val status: Boolean? = null
+//    val assetType: String? = null,
+//    val ipoDate: Date? = null,
+//    val delistingDate: Date? = null,
+//    val status: Boolean? = null
 )

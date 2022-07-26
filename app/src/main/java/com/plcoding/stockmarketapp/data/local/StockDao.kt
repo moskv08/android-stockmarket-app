@@ -1,10 +1,8 @@
 package com.plcoding.stockmarketapp.data.local
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
+@Dao
 interface StockDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -12,7 +10,6 @@ interface StockDao {
         companyListingEntity: List<CompanyListingEntity>
     )
 
-    @Delete
     @Query("DELETE FROM companylistingentity")
     suspend fun clearCompanyListing()
 
