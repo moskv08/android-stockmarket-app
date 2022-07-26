@@ -21,6 +21,10 @@ class CompanyListingViewModel @Inject constructor(
     var state by mutableStateOf(CompanyListingState())
     private var searchJob: Job? = null
 
+    init {
+        getCompanyListings()
+    }
+
     fun onEvent(event: CompanyListingEvents){
         when(event) {
             is CompanyListingEvents.Refresh -> {
@@ -38,7 +42,7 @@ class CompanyListingViewModel @Inject constructor(
     }
 
     private fun getCompanyListings(
-        fetchFromRemote: Boolean,
+        fetchFromRemote: Boolean = false,
         query: String = state.searchQuery.lowercase()
     ){
         viewModelScope.launch {
@@ -50,7 +54,6 @@ class CompanyListingViewModel @Inject constructor(
                             result.data?.let { listingOfCompanies ->
                                 state = state.copy(companies = listingOfCompanies)
                             }
-
                         }
                         is Resource.Error -> Unit
                             // TODO: Implement Error Handling!

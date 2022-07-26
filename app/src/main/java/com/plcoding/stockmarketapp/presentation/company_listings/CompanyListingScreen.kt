@@ -13,12 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.plcoding.stockmarketapp.presentation.Screen
 
 @Composable
 fun CompanyListingScreen(
+    navController: NavController,
     viewModel: CompanyListingViewModel = hiltViewModel()
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(
@@ -26,7 +29,9 @@ fun CompanyListingScreen(
     )
     val state = viewModel.state
 
-    Column() {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         // Search Box
         OutlinedTextField(
             value = state.searchQuery,
@@ -52,10 +57,9 @@ fun CompanyListingScreen(
             }
         ) {
             LazyColumn(
-                modifier = Modifier
+                modifier = Modifier.fillMaxSize()
             ) {
                 items(state.companies.size) { index ->
-
                     val company = state.companies[index]
                     CompanyItem(
                         company = company,
@@ -63,9 +67,10 @@ fun CompanyListingScreen(
                             .fillMaxWidth()
                             .clickable {
                                 // TODO: Navigation to details screen
+                                // navController.navigate(Screen.CompanyInfoScreen.route)
                             }
+                            .padding(16.dp)
                     )
-
                     if (index < state.companies.size) {
                         Divider(
                             modifier = Modifier.padding(
@@ -73,7 +78,6 @@ fun CompanyListingScreen(
                             )
                         )
                     }
-
                 }
             }
         }
