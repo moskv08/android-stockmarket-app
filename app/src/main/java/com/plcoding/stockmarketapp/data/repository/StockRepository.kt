@@ -1,12 +1,15 @@
 package com.plcoding.stockmarketapp.data.repository
 
 import com.plcoding.stockmarketapp.data.csv.CSVParser
+import com.plcoding.stockmarketapp.data.csv.IntradayInfoParser
 import com.plcoding.stockmarketapp.data.local.StockDao
 import com.plcoding.stockmarketapp.data.local.StockDatabase
 import com.plcoding.stockmarketapp.data.mapper.toCompanyListing
 import com.plcoding.stockmarketapp.data.mapper.toCompanyListingEntity
 import com.plcoding.stockmarketapp.data.remote.StockApi
+import com.plcoding.stockmarketapp.domain.model.CompanyInfo
 import com.plcoding.stockmarketapp.domain.model.CompanyListing
+import com.plcoding.stockmarketapp.domain.model.IntradayInfo
 import com.plcoding.stockmarketapp.domain.repository.StockRepository
 import com.plcoding.stockmarketapp.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +23,8 @@ import javax.inject.Singleton
 class StockRepository @Inject constructor(
     private val api: StockApi,
     private val db: StockDatabase,
-    private val companyListingParser: CSVParser<CompanyListing>
+    private val companyListingParser: CSVParser<CompanyListing>,
+    private val intradayInfoParser: CSVParser<IntradayInfo>
 ): StockRepository {
 
     override suspend fun getCompanyListings(
@@ -70,5 +74,25 @@ class StockRepository @Inject constructor(
                 emit(Resource.isLoading(false))
             }
         }
+    }
+
+    override suspend fun getIntradayInfoBySymbol(symbol: String): Resource<List<IntradayInfo>> {
+        return try {
+            val response = api.getIntraDayInfo(symbol)
+            val results = intradayInfoParser.parse(response.byteStream())
+            return Resource.Success(results)
+        }
+        catch (e: IOException){
+            e.printStackTrace()
+            Resource.Error(message = "Something went wrong: ${e.message}")
+        }
+        catch (e: HttpException){
+            e.printStackTrace()
+            Resource.Error(message = "Something went wrong: ${e.message}")
+        }
+    }
+
+    override suspend fun getCompanyInfoBySymbol(symbol: String): Resource<CompanyInfo> {
+        TODO("Not yet implemented")
     }
 }
