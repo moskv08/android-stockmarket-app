@@ -4,6 +4,7 @@ import com.plcoding.stockmarketapp.data.csv.CSVParser
 import com.plcoding.stockmarketapp.data.csv.IntradayInfoParser
 import com.plcoding.stockmarketapp.data.local.StockDao
 import com.plcoding.stockmarketapp.data.local.StockDatabase
+import com.plcoding.stockmarketapp.data.mapper.toCompanyInfo
 import com.plcoding.stockmarketapp.data.mapper.toCompanyListing
 import com.plcoding.stockmarketapp.data.mapper.toCompanyListingEntity
 import com.plcoding.stockmarketapp.data.remote.StockApi
@@ -93,6 +94,18 @@ class StockRepository @Inject constructor(
     }
 
     override suspend fun getCompanyInfoBySymbol(symbol: String): Resource<CompanyInfo> {
-        TODO("Not yet implemented")
+        return try {
+            val dtoResult = api.getCompanyInfo(symbol)
+            val result = dtoResult.toCompanyInfo()
+            return Resource.Success(result)
+        }
+        catch (e: IOException){
+            e.printStackTrace()
+            Resource.Error(message = "Something went wrong: ${e.message}")
+        }
+        catch (e: HttpException){
+            e.printStackTrace()
+            Resource.Error(message = "Something went wrong: ${e.message}")
+        }
     }
 }
