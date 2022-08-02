@@ -101,11 +101,11 @@ class StockRepository @Inject constructor(
         }
         catch (e: IOException){
             e.printStackTrace()
-            Resource.Error(message = "Something went wrong: ${e.message}")
+            Resource.Error(message = "Something went wrong while trying to get Company Info: ${e.message}")
         }
         catch (e: HttpException){
             e.printStackTrace()
-            Resource.Error(message = "Something went wrong: ${e.message}")
+            Resource.Error(message = "Something went wrong while trying to get Company Info: ${e.message}")
         }
     }
 }
