@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.plcoding.stockmarketapp.presentation.Screen
 
@@ -66,8 +65,8 @@ fun CompanyListingScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                // TODO: Navigation to details screen
-                                // navController.navigate(Screen.CompanyInfoScreen.route)
+                                navController.navigate(
+                                    Screen.CompanyInfoScreen.route + "/${company.symbol}")
                             }
                             .padding(16.dp)
                     )
