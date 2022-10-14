@@ -89,6 +89,17 @@ fun CompanyInfoScreen(
                             .align(CenterHorizontally)
                     )
                 }
+                else {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Divider(modifier = Modifier.fillMaxWidth())
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Something went wrong here",
+                        fontSize = 12.sp,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }

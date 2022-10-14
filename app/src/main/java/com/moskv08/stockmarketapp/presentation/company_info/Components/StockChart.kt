@@ -39,15 +39,16 @@ fun StockChart(
     val density = LocalDensity.current
     val textPaint = remember(density) {
         Paint().apply {
-            color = android.graphics.Color.WHITE
+            color = android.graphics.Color.BLACK
             textAlign = Paint.Align.CENTER
             textSize = density.run { 12.sp.toPx()}
         }
     }
-    Canvas(modifier = modifier){
 
+    Canvas(modifier = modifier){
         // Define X-Axis
         val spacePerHour = (size.width - spacing) / stockInfos.size
+
         (0 until stockInfos.size - 1 step 2).forEach { index ->
             val info = stockInfos[index]
             val hour = info.date.hour
