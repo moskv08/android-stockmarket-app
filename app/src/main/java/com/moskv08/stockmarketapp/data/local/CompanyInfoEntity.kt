@@ -9,9 +9,9 @@ import java.sql.Date
 data class CompanyInfoEntity(
     @PrimaryKey
     val id: Int? = null,
-    val symbol: String?,
-    val description: String?,
-    val name: String?,
-    val country: String?,
-    val industry: String?,
+    val symbol: String,
+    val description: String,
+    val name: String,
+    val country: String,
+    val industry: String,
 )

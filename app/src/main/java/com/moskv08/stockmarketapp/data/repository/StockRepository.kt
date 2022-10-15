@@ -92,7 +92,12 @@ class StockRepository @Inject constructor(
     }
 
     override suspend fun getCompanyInfoBySymbol(symbol: String): Resource<CompanyInfo> {
+        // TODO: Try to load from DB first. If there is no entry,
+        //  load from API and insert response in DB.
         return try {
+
+            val localResult = db.dao.findCompanyInfo(symbol)
+
             val dtoResult = api.getCompanyInfo(symbol)
             val result = dtoResult.toCompanyInfo()
             return Resource.Success(result)

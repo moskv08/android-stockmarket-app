@@ -1,11 +1,14 @@
 package com.moskv08.stockmarketapp.data.local
 
 import androidx.room.*
+import retrofit2.http.GET
 
 @Dao
 interface StockDao {
 
-    // Company Listings
+    /*
+    * Company Listings
+    * */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCompanyListings(
         companyListingEntity: List<CompanyListingEntity>
@@ -24,9 +27,14 @@ interface StockDao {
     )
     suspend fun searchCompanyListing(query: String): List<CompanyListingEntity>
 
-    // Company Info
+    /*
+    * Company Info
+    */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCompanyInfo(
         companyInfoEntity: CompanyInfoEntity
     )
+
+    @Query("SELECT * FROM CompanyInfoEntity WHERE UPPER(:query) == symbol")
+    suspend fun findCompanyInfo(query: String): CompanyInfoEntity
 }
