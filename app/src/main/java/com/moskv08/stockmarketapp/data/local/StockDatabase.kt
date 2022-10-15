@@ -4,8 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [CompanyListingEntity::class],
-    version = 1 // Increase number when updating definition
+    entities = [CompanyListingEntity::class, CompanyInfoEntity::class],
+    version = 2 // Increase number when updating definition
 )
 abstract class StockDatabase: RoomDatabase() {
     // Generate database based on this definition
