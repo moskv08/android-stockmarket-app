@@ -3,6 +3,7 @@ package com.moskv08.stockmarketapp.data.repository
 import com.moskv08.stockmarketapp.data.csv.CSVParser
 import com.moskv08.stockmarketapp.data.local.StockDatabase
 import com.moskv08.stockmarketapp.data.mapper.toCompanyInfo
+import com.moskv08.stockmarketapp.data.mapper.toCompanyInfoEntity
 import com.moskv08.stockmarketapp.data.mapper.toCompanyListing
 import com.moskv08.stockmarketapp.data.mapper.toCompanyListingEntity
 import com.moskv08.stockmarketapp.data.remote.StockApi
@@ -92,15 +93,25 @@ class StockRepository @Inject constructor(
     }
 
     override suspend fun getCompanyInfoBySymbol(symbol: String): Resource<CompanyInfo> {
-        // TODO: Try to load from DB first. If there is no entry,
-        //  load from API and insert response in DB.
+        // TODO: Try to load from DB first.
+        //  If there is no data, load from API and insert response in DB.
+        //  Then load from DB again.
+        val localResult = db.dao.findCompanyInfo(symbol)
+
+        if(localResult.id != null){
+            val data = localResult.toCompanyInfo()
+            return Resource.Success(data)
+        }
+
+        // API Request
         return try {
-
-            val localResult = db.dao.findCompanyInfo(symbol)
-
             val dtoResult = api.getCompanyInfo(symbol)
-            val result = dtoResult.toCompanyInfo()
-            return Resource.Success(result)
+            val companyInfo = dtoResult.toCompanyInfo()
+
+            db.dao.insertCompanyInfo(companyInfo.toCompanyInfoEntity())
+
+            val result = db.dao.findCompanyInfo(symbol)
+            return Resource.Success(result.toCompanyInfo())
         }
         catch (e: IOException){
             e.printStackTrace()
