@@ -30,8 +30,9 @@ class IntradayInfoParser @Inject constructor() : CSVParser<IntradayInfo> {
                     val dto = IntradayInfoDto(timestamp, close.toDouble())
                     dto.toIntradayInfo()
                 }.filter {
+                    // TODO: Go back in time more in case no data (weekend) was found.
                     // Just use records from yesterday
-                    it.date.dayOfMonth == LocalDate.now().minusDays(1).dayOfMonth
+                    it.date.dayOfMonth == LocalDate.now().minusDays(2).dayOfMonth
 
                 }.sortedBy {
                     it.date.hour
