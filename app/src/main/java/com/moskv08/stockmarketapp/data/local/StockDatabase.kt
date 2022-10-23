@@ -9,7 +9,8 @@ import androidx.room.RoomDatabase
     entities = [CompanyListingEntity::class, CompanyInfoEntity::class],
     autoMigrations = [
         AutoMigration(from = 1, to = 2)
-    ]
+    ],
+    exportSchema = true
 )
 abstract class StockDatabase: RoomDatabase() {
     // Generate database based on this definition

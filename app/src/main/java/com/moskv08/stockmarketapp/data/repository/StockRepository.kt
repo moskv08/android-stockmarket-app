@@ -98,7 +98,7 @@ class StockRepository @Inject constructor(
         //  Then load from DB again.
         val localResult = db.dao.findCompanyInfo(symbol)
 
-        if(localResult.id != null){
+        if(localResult != null){
             val data = localResult.toCompanyInfo()
             return Resource.Success(data)
         }
