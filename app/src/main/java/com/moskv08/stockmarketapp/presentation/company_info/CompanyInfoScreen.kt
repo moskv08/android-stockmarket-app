@@ -95,7 +95,7 @@ fun CompanyInfoScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Something went wrong here",
+                        text = "Something went wrong here. No stock information found.",
                         fontSize = 12.sp,
                         modifier = Modifier.fillMaxWidth()
                     )

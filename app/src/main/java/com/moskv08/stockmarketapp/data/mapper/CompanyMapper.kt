@@ -22,6 +22,7 @@ fun CompanyListing.toCompanyListingEntity(): CompanyListingEntity {
     )
 }
 
+// Write to DB
 fun CompanyInfo.toCompanyInfoEntity(): CompanyInfoEntity {
     return CompanyInfoEntity(
         symbol = symbol,
@@ -32,16 +33,18 @@ fun CompanyInfo.toCompanyInfoEntity(): CompanyInfoEntity {
     )
 }
 
+// Read from DB
 fun CompanyInfoEntity.toCompanyInfo(): CompanyInfo {
     return CompanyInfo(
-        symbol = symbol,
-        description = description,
-        name = name,
-        country = country,
-        industry = industry
+        symbol = symbol ?: "N/A",
+        description = description ?: "N/A",
+        name = name ?: "N/A",
+        country = country ?: "N/A",
+        industry = industry ?: "N/A"
     )
 }
 
+// Load from API
 fun CompanyInfoDto.toCompanyInfo(): CompanyInfo {
     return CompanyInfo(
         symbol = symbol ?: "",

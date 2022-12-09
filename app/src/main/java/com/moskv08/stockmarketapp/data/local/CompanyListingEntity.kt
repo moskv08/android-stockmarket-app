@@ -2,7 +2,6 @@ package com.moskv08.stockmarketapp.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.sql.Date
 
 @Entity
 data class CompanyListingEntity(

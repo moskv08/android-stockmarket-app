@@ -5,10 +5,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    version = 2, // Increase number when updating definition
+    version = 4, // Increase number when updating definition
     entities = [CompanyListingEntity::class, CompanyInfoEntity::class],
     autoMigrations = [
-        AutoMigration(from = 1, to = 2)
+        AutoMigration(from = 3, to = 4)
     ],
     exportSchema = true
 )

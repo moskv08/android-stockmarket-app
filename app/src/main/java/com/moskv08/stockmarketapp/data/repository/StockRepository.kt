@@ -77,6 +77,7 @@ class StockRepository @Inject constructor(
     }
 
     override suspend fun getIntradayInfoBySymbol(symbol: String): Resource<List<IntradayInfo>> {
+        // TODO: Load Intraday info only once, afterwards from cache (DB).
         return try {
             val response = api.getIntraDayInfo(symbol)
             val results = intradayInfoParser.parse(response.byteStream())
@@ -93,9 +94,6 @@ class StockRepository @Inject constructor(
     }
 
     override suspend fun getCompanyInfoBySymbol(symbol: String): Resource<CompanyInfo> {
-        // TODO: Try to load from DB first.
-        //  If there is no data, load from API and insert response in DB.
-        //  Then load from DB again.
         val localResult = db.dao.findCompanyInfo(symbol)
 
         if(localResult != null){
