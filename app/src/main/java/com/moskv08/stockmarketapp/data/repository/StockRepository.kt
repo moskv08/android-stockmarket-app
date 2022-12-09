@@ -3,6 +3,7 @@ package com.moskv08.stockmarketapp.data.repository
 import com.moskv08.stockmarketapp.data.csv.CSVParser
 import com.moskv08.stockmarketapp.data.local.StockDatabase
 import com.moskv08.stockmarketapp.data.mapper.toCompanyInfo
+import com.moskv08.stockmarketapp.data.mapper.toCompanyInfoEntity
 import com.moskv08.stockmarketapp.data.mapper.toCompanyListing
 import com.moskv08.stockmarketapp.data.mapper.toCompanyListingEntity
 import com.moskv08.stockmarketapp.data.remote.StockApi
@@ -49,7 +50,7 @@ class StockRepository @Inject constructor(
 
             // API Request
             val remoteListing = try {
-                val response = api.getStockData()
+                val response = api.getCompanyListing()
                 companyListingParser.parse(response.byteStream())
             } catch (e: IOException){
                 e.printStackTrace()
@@ -76,6 +77,7 @@ class StockRepository @Inject constructor(
     }
 
     override suspend fun getIntradayInfoBySymbol(symbol: String): Resource<List<IntradayInfo>> {
+        // TODO: Load Intraday info only once, afterwards from cache (DB).
         return try {
             val response = api.getIntraDayInfo(symbol)
             val results = intradayInfoParser.parse(response.byteStream())
@@ -92,10 +94,22 @@ class StockRepository @Inject constructor(
     }
 
     override suspend fun getCompanyInfoBySymbol(symbol: String): Resource<CompanyInfo> {
+        val localResult = db.dao.findCompanyInfo(symbol)
+
+        if(localResult != null){
+            val data = localResult.toCompanyInfo()
+            return Resource.Success(data)
+        }
+
+        // API Request
         return try {
             val dtoResult = api.getCompanyInfo(symbol)
-            val result = dtoResult.toCompanyInfo()
-            return Resource.Success(result)
+            val companyInfo = dtoResult.toCompanyInfo()
+
+            db.dao.insertCompanyInfo(companyInfo.toCompanyInfoEntity())
+
+            val result = db.dao.findCompanyInfo(symbol)
+            return Resource.Success(result.toCompanyInfo())
         }
         catch (e: IOException){
             e.printStackTrace()

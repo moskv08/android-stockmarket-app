@@ -8,8 +8,7 @@ import retrofit2.http.Query
 interface StockApi {
 
     @GET("query?function=LISTING_STATUS")
-    // TODO: Change naming to getCompanyListing
-    suspend fun getStockData(
+    suspend fun getCompanyListing(
         @Query("apikey") apiKey: String = API_KEY
     ): ResponseBody
 
